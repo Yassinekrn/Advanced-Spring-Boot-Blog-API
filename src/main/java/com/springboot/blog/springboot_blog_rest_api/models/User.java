@@ -1,5 +1,6 @@
 package com.springboot.blog.springboot_blog_rest_api.models;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -32,5 +33,5 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) // TODO: understand this
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 }
