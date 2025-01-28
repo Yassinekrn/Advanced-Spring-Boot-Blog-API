@@ -60,6 +60,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll() // ✅ Public GET API access
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll() // ✅ Public auth routes
+                        .requestMatchers(
+                                "/v3/api-docs/**", // OpenAPI docs
+                                "/swagger-ui/**", // Swagger UI resources
+                                "/swagger-ui.html" // Swagger UI main page
+                        ).permitAll() // Allow access without authentication
+                        .requestMatchers("/actuator/**").permitAll() // ✅ Actuator endpoints
                         .anyRequest().authenticated()) // ✅ All other requests require authentication
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // ✅ Add JWT
                                                                                                          // filter

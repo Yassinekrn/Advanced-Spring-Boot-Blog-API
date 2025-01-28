@@ -22,8 +22,12 @@ import com.springboot.blog.springboot_blog_rest_api.repositories.RoleRepository;
 import com.springboot.blog.springboot_blog_rest_api.repositories.UserRepository;
 import com.springboot.blog.springboot_blog_rest_api.security.JwtTokenProvider;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "auth", description = "Authentication APIs")
 public class AuthController {
 
     @Autowired
@@ -42,6 +46,7 @@ public class AuthController {
     private JwtTokenProvider tokenProvider;
 
     @PostMapping("/login")
+    @Operation(summary = "Authenticate user", description = "Authenticate user with username or email and password")
     public ResponseEntity<JwtAuthResponse> authenticateUser(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(),
@@ -55,6 +60,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "Register user", description = "Register user with name, username, email and password")
     public ResponseEntity<?> registerUser(@RequestBody SignupDto signupDto) {
 
         if (userRepository.existsByUsername(signupDto.getUsername())) {
