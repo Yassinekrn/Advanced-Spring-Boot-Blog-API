@@ -1,5 +1,6 @@
 package com.springboot.blog.springboot_blog_rest_api.payloads;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -21,4 +22,7 @@ public class PostDto {
     @NotEmpty(message = "Content is required")
     private String content;
     private Set<CommentDto> comments;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

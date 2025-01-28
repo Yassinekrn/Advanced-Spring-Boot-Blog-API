@@ -1,5 +1,7 @@
 package com.springboot.blog.springboot_blog_rest_api.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -72,5 +74,10 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
         return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<PostDto>> searchPosts(@RequestParam String query) {
+        return new ResponseEntity<>(postService.searchPosts(query), HttpStatus.OK);
     }
 }

@@ -1,5 +1,7 @@
 package com.springboot.blog.springboot_blog_rest_api.services;
 
+import java.util.List;
+
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostDto;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostResponse;
 
@@ -13,4 +15,6 @@ public interface PostService {
     PostDto updatePost(Long id, PostDto postDto);
 
     void deletePost(Long id);
+
+    List<PostDto> searchPosts(String query);
 }

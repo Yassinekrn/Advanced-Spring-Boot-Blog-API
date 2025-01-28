@@ -1,7 +1,11 @@
 package com.springboot.blog.springboot_blog_rest_api.models;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,5 +47,14 @@ public class Post {
         // orphanRemoval = true means that if a comment is removed from the comments
         // list of a post, it will be deleted from the database
         private Set<Comment> comments = new HashSet<>();
+
+        // new fields
+        @CreationTimestamp
+        @Column(name = "created_at", nullable = false, updatable = false)
+        private LocalDateTime createdAt;
+
+        @UpdateTimestamp
+        @Column(name = "updated_at", nullable = false)
+        private LocalDateTime updatedAt;
 
 }
