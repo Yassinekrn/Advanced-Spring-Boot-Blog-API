@@ -21,7 +21,7 @@ import com.springboot.blog.springboot_blog_rest_api.utils.AppConstants;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/v1/posts")
 public class PostController {
     private PostService postService;
 

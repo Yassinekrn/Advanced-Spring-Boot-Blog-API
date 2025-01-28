@@ -19,7 +19,7 @@ import com.springboot.blog.springboot_blog_rest_api.services.CommentService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/v1/")
 public class CommentController {
 
     private CommentService commentService;

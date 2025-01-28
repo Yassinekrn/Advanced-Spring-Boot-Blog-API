@@ -58,8 +58,8 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)) // ✅ Handles unauthorized access
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // ✅ Public GET API access
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // ✅ Public auth routes
+                        .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll() // ✅ Public GET API access
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll() // ✅ Public auth routes
                         .anyRequest().authenticated()) // ✅ All other requests require authentication
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // ✅ Add JWT
                                                                                                          // filter
