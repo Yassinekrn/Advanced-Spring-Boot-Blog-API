@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.springboot.blog.springboot_blog_rest_api.models.User;
+import com.springboot.blog.springboot_blog_rest_api.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);

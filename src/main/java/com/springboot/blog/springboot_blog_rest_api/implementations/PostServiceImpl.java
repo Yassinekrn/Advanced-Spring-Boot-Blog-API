@@ -1,4 +1,4 @@
-package com.springboot.blog.springboot_blog_rest_api.services.impls;
+package com.springboot.blog.springboot_blog_rest_api.implementations;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.springboot.blog.springboot_blog_rest_api.entities.Post;
+import com.springboot.blog.springboot_blog_rest_api.entities.User;
 import com.springboot.blog.springboot_blog_rest_api.exceptions.ResourceNotFoundException;
-import com.springboot.blog.springboot_blog_rest_api.models.Post;
-import com.springboot.blog.springboot_blog_rest_api.models.User;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostDto;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostResponse;
 import com.springboot.blog.springboot_blog_rest_api.repositories.PostRepository;
@@ -26,7 +26,6 @@ public class PostServiceImpl implements PostService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    // @Autowired can be omitted for constructor-based injection with a single
     public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, JwtTokenProvider jwtTokenProvider,
             UserRepository userRepository) {
         this.postRepository = postRepository;
@@ -41,7 +40,6 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // UPDATED
     @Override
     public PostDto createPost(PostDto postDto, String token) {
         User user = getAuthenticatedUser(token);
@@ -91,7 +89,6 @@ public class PostServiceImpl implements PostService {
         return MapToDTO(post);
     }
 
-    // UPDATED
     @Override
     public PostDto updatePost(Long id, PostDto postDto, String token) {
         User user = getAuthenticatedUser(token);
@@ -107,7 +104,6 @@ public class PostServiceImpl implements PostService {
         return MapToDTO(postRepository.save(post));
     }
 
-    // UPDATED
     @Override
     public void deletePost(Long id, String token) {
         User user = getAuthenticatedUser(token);

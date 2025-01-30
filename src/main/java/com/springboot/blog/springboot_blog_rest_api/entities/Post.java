@@ -1,4 +1,4 @@
-package com.springboot.blog.springboot_blog_rest_api.models;
+package com.springboot.blog.springboot_blog_rest_api.entities;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;

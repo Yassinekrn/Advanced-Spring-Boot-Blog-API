@@ -19,14 +19,14 @@ import com.springboot.blog.springboot_blog_rest_api.security.JwtAuthenticationEn
 import com.springboot.blog.springboot_blog_rest_api.security.JwtAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity // Enable Spring Security
+@EnableMethodSecurity(prePostEnabled = true) // Enable method-level security, e.g., @PreAuthorize
 public class SecurityConfig {
 
     @SuppressWarnings("unused")
     private final CustomUserDetailsService userDetailsService;
 
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // Auto-wired
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
@@ -52,23 +52,22 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // ✅ CSRF protection disabled for stateless APIs
+                .csrf(csrf -> csrf.disable()) // CSRF protection disabled for stateless APIs
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // ✅ Stateless JWT authentication
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless JWT authentication
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)) // ✅ Handles unauthorized access
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)) // Handles unauthorized access
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll() // ✅ Public GET API access
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll() // ✅ Public auth routes
+                        .requestMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                         .requestMatchers(
-                                "/v3/api-docs/**", // OpenAPI docs
-                                "/swagger-ui/**", // Swagger UI resources
-                                "/swagger-ui.html" // Swagger UI main page
-                        ).permitAll() // Allow access without authentication
-                        .requestMatchers("/actuator/**").permitAll() // ✅ Actuator endpoints
-                        .anyRequest().authenticated()) // ✅ All other requests require authentication
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // ✅ Add JWT
-                                                                                                         // filter
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
+                        .permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT Filter
 
         return http.build();
     }

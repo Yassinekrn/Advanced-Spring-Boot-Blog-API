@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.springboot.blog.springboot_blog_rest_api.models.Post;
+import com.springboot.blog.springboot_blog_rest_api.entities.Post;
 
 // no need to add @Repository annotation since JpaRepository is already annotated with @Repository
 // JpaRepository is an interface that provides methods for performing CRUD operations on the entity

@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.springboot.blog.springboot_blog_rest_api.models.Role;
-import com.springboot.blog.springboot_blog_rest_api.models.User;
+import com.springboot.blog.springboot_blog_rest_api.entities.Role;
+import com.springboot.blog.springboot_blog_rest_api.entities.User;
 import com.springboot.blog.springboot_blog_rest_api.repositories.UserRepository;
 
 import java.util.Collection;

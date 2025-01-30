@@ -1,4 +1,4 @@
-package com.springboot.blog.springboot_blog_rest_api.services.impls;
+package com.springboot.blog.springboot_blog_rest_api.implementations;
 
 import java.util.List;
 
@@ -6,10 +6,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.springboot.blog.springboot_blog_rest_api.entities.Comment;
+import com.springboot.blog.springboot_blog_rest_api.entities.Post;
 import com.springboot.blog.springboot_blog_rest_api.exceptions.BlogAPIException;
 import com.springboot.blog.springboot_blog_rest_api.exceptions.ResourceNotFoundException;
-import com.springboot.blog.springboot_blog_rest_api.models.Comment;
-import com.springboot.blog.springboot_blog_rest_api.models.Post;
 import com.springboot.blog.springboot_blog_rest_api.payloads.CommentDto;
 import com.springboot.blog.springboot_blog_rest_api.repositories.CommentRepository;
 import com.springboot.blog.springboot_blog_rest_api.repositories.PostRepository;
@@ -44,22 +44,11 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentDto mapToDTO(Comment comment) {
         CommentDto commentDto = mapper.map(comment, CommentDto.class);
-
-        // CommentDto commentDto = new CommentDto();
-        // commentDto.setId(comment.getId());
-        // commentDto.setName(comment.getName());
-        // commentDto.setEmail(comment.getEmail());
-        // commentDto.setBody(comment.getBody());
         return commentDto;
     }
 
     private Comment mapToEntity(CommentDto commentDto) {
         Comment comment = mapper.map(commentDto, Comment.class);
-        // Comment comment = new Comment();
-        // comment.setId(commentDto.getId());
-        // comment.setName(commentDto.getName());
-        // comment.setEmail(commentDto.getEmail());
-        // comment.setBody(commentDto.getBody());
         return comment;
     }
 
