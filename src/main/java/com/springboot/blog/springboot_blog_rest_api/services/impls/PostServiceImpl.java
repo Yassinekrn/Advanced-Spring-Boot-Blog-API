@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.blog.springboot_blog_rest_api.exceptions.ResourceNotFoundException;
 import com.springboot.blog.springboot_blog_rest_api.models.Post;
+import com.springboot.blog.springboot_blog_rest_api.models.User;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostDto;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostResponse;
 import com.springboot.blog.springboot_blog_rest_api.repositories.PostRepository;
+import com.springboot.blog.springboot_blog_rest_api.repositories.UserRepository;
+import com.springboot.blog.springboot_blog_rest_api.security.JwtTokenProvider;
 import com.springboot.blog.springboot_blog_rest_api.services.PostService;
 
 @Service
@@ -20,16 +23,30 @@ public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
     private ModelMapper mapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
     // @Autowired can be omitted for constructor-based injection with a single
-    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper) {
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, JwtTokenProvider jwtTokenProvider,
+            UserRepository userRepository) {
         this.postRepository = postRepository;
         this.mapper = modelMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
+    private User getAuthenticatedUser(String token) {
+        String username = jwtTokenProvider.getUsernameFromJWT(token);
+        return userRepository.findByUsernameOrEmail(username, username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    // UPDATED
     @Override
-    public PostDto createPost(PostDto postDto) {
+    public PostDto createPost(PostDto postDto, String token) {
+        User user = getAuthenticatedUser(token);
         Post post = MapToEntity(postDto);
+        post.setOwner(user);
         PostDto postResponse = new PostDto();
         postResponse = MapToDTO(postRepository.save(post));
         return postResponse;
@@ -59,24 +76,12 @@ public class PostServiceImpl implements PostService {
     }
 
     private PostDto MapToDTO(Post post) {
-
         PostDto postDto = mapper.map(post, PostDto.class);
-
-        // PostDto postDto = new PostDto();
-        // postDto.setId(post.getId());
-        // postDto.setTitle(post.getTitle());
-        // postDto.setDescription(post.getDescription());
-        // postDto.setContent(post.getContent());
         return postDto;
     }
 
     private Post MapToEntity(PostDto postDto) {
         Post post = mapper.map(postDto, Post.class);
-
-        // Post post = new Post();
-        // post.setTitle(postDto.getTitle());
-        // post.setDescription(postDto.getDescription());
-        // post.setContent(postDto.getContent());
         return post;
     }
 
@@ -86,18 +91,31 @@ public class PostServiceImpl implements PostService {
         return MapToDTO(post);
     }
 
+    // UPDATED
     @Override
-    public PostDto updatePost(Long id, PostDto postDto) {
+    public PostDto updatePost(Long id, PostDto postDto, String token) {
+        User user = getAuthenticatedUser(token);
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        // Check if the user owns the post
+        if (!post.getOwner().getId().equals(user.getId())
+                && !user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            throw new RuntimeException("You can only update your own posts!");
+        }
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
         return MapToDTO(postRepository.save(post));
     }
 
+    // UPDATED
     @Override
-    public void deletePost(Long id) {
+    public void deletePost(Long id, String token) {
+        User user = getAuthenticatedUser(token);
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        if (!post.getOwner().getId().equals(user.getId())
+                && !user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            throw new RuntimeException("You can only delete your own posts!");
+        }
         postRepository.delete(post);
     }
 

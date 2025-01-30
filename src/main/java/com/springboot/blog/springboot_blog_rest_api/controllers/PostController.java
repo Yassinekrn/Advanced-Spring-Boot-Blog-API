@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostDto;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostResponse;
+import com.springboot.blog.springboot_blog_rest_api.security.JwtAuthenticationFilter;
 import com.springboot.blog.springboot_blog_rest_api.services.PostService;
 import com.springboot.blog.springboot_blog_rest_api.utils.AppConstants;
 
@@ -31,7 +33,7 @@ import jakarta.validation.Valid;
 public class PostController {
     private PostService postService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.postService = postService;
     }
 
@@ -39,8 +41,10 @@ public class PostController {
     @PostMapping
     @Operation(summary = "Create post", description = "Create a new post")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
-        return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto,
+            @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        return new ResponseEntity<>(postService.createPost(postDto, jwt), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -63,16 +67,19 @@ public class PostController {
     @PutMapping("/{id}")
     @Operation(summary = "Update post", description = "Update a post by ID")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<PostDto> updatePost(@Valid @PathVariable Long id, @RequestBody PostDto postDto) {
-        return new ResponseEntity<>(postService.updatePost(id, postDto), HttpStatus.OK);
+    public ResponseEntity<PostDto> updatePost(@Valid @PathVariable Long id, @RequestBody PostDto postDto,
+            @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        return new ResponseEntity<>(postService.updatePost(id, postDto, jwt), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete post", description = "Delete a post by ID")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<String> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    public ResponseEntity<String> deletePost(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        postService.deletePost(id, jwt);
         return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
 
