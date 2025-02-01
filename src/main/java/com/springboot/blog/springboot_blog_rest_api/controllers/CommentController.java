@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,8 +39,9 @@ public class CommentController {
     @Operation(summary = "Create comment", description = "Create a new comment for a post")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<CommentDto> createComment(@PathVariable Long postId,
-            @Valid @RequestBody CommentDto commentDto) {
-        return new ResponseEntity<>(commentService.createComment(postId, commentDto), HttpStatus.CREATED);
+            @Valid @RequestBody CommentDto commentDto, @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        return new ResponseEntity<>(commentService.createComment(postId, commentDto, jwt), HttpStatus.CREATED);
     }
 
     @GetMapping("/posts/{postId}/comments")
@@ -63,8 +65,10 @@ public class CommentController {
     public ResponseEntity<CommentDto> updateComment(
             @PathVariable Long postId,
             @PathVariable Long commentId,
-            @Valid @RequestBody CommentDto commentDto) {
-        return new ResponseEntity<>(commentService.updateComment(postId, commentId, commentDto), HttpStatus.OK);
+            @Valid @RequestBody CommentDto commentDto,
+            @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        return new ResponseEntity<>(commentService.updateComment(postId, commentId, commentDto, jwt), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -73,8 +77,10 @@ public class CommentController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<String> deleteComment(
             @PathVariable Long postId,
-            @PathVariable Long commentId) {
-        commentService.deleteComment(postId, commentId);
+            @PathVariable Long commentId,
+            @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        commentService.deleteComment(postId, commentId, jwt);
         return new ResponseEntity<>("Comment entity deleted successfully.", HttpStatus.OK);
     }
 }

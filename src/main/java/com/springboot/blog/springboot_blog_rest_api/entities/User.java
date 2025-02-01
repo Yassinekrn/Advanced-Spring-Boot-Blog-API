@@ -39,4 +39,7 @@ public class User {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST, orphanRemoval = false)
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    private List<Comment> comments;
 }

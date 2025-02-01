@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.blog.springboot_blog_rest_api.entities.Comment;
 import com.springboot.blog.springboot_blog_rest_api.entities.Post;
+import com.springboot.blog.springboot_blog_rest_api.entities.User;
 import com.springboot.blog.springboot_blog_rest_api.exceptions.BlogAPIException;
 import com.springboot.blog.springboot_blog_rest_api.exceptions.ResourceNotFoundException;
 import com.springboot.blog.springboot_blog_rest_api.payloads.CommentDto;
 import com.springboot.blog.springboot_blog_rest_api.repositories.CommentRepository;
 import com.springboot.blog.springboot_blog_rest_api.repositories.PostRepository;
+import com.springboot.blog.springboot_blog_rest_api.repositories.UserRepository;
+import com.springboot.blog.springboot_blog_rest_api.security.JwtTokenProvider;
 import com.springboot.blog.springboot_blog_rest_api.services.CommentService;
 
 @Service
@@ -21,17 +24,30 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     private PostRepository postRepository;
     private ModelMapper mapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
     public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository,
-            ModelMapper modelMapper) {
+            ModelMapper modelMapper, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.mapper = modelMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
+    }
+
+    // TODO: refactor me in utils
+    private User getAuthenticatedUser(String token) {
+        String username = jwtTokenProvider.getUsernameFromJWT(token);
+        return userRepository.findByUsernameOrEmail(username, username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override
-    public CommentDto createComment(Long postId, CommentDto commentDto) {
+    public CommentDto createComment(Long postId, CommentDto commentDto, String token) {
+        User user = getAuthenticatedUser(token);
         Comment comment = mapToEntity(commentDto);
+        comment.setOwner(user);
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
@@ -74,8 +90,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto) {
-
+    public CommentDto updateComment(Long postId, Long commentId, CommentDto commentDto, String token) {
+        User user = getAuthenticatedUser(token);
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
 
@@ -86,8 +102,13 @@ public class CommentServiceImpl implements CommentService {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to the post");
         }
 
-        comment.setName(commentDto.getName());
-        comment.setEmail(commentDto.getEmail());
+        if (!comment.getOwner().getId().equals(user.getId())
+                && !user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            throw new RuntimeException("You can only update your own comments!");
+        }
+
+        // comment.setName(commentDto.getName());
+        // comment.setEmail(commentDto.getEmail());
         comment.setBody(commentDto.getBody());
 
         Comment updatedComment = commentRepository.save(comment);
@@ -96,7 +117,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long postId, Long commentId) {
+    public void deleteComment(Long postId, Long commentId, String token) {
+        User user = getAuthenticatedUser(token);
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
 
@@ -105,6 +127,11 @@ public class CommentServiceImpl implements CommentService {
 
         if (comment.getPost().getId() != post.getId()) {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to the post");
+        }
+
+        if (!comment.getOwner().getId().equals(user.getId())
+                && !user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            throw new RuntimeException("You can only delete your own comments!");
         }
 
         commentRepository.delete(comment);

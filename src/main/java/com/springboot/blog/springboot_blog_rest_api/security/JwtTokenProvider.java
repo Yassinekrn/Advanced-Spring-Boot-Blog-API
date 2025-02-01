@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -20,11 +21,15 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwtSecret}")
-    private String jwtSecret;
+    private final Dotenv dotenv = Dotenv.load();
 
-    @Value("${app.jwtExpirationInMs}")
+    private String jwtSecret;
     private int jwtExpirationInMs;
+
+    public JwtTokenProvider() {
+        this.jwtSecret = dotenv.get("APP_JWT_SECRET");
+        this.jwtExpirationInMs = Integer.parseInt(dotenv.get("APP_JWT_EXPIRATION_IN_MS"));
+    }
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
