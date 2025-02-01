@@ -1,6 +1,9 @@
 package com.springboot.blog.springboot_blog_rest_api.implementations;
 
 import com.springboot.blog.springboot_blog_rest_api.services.OllamaService;
+
+import io.github.cdimascio.dotenv.Dotenv;
+
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -9,13 +12,17 @@ import org.json.JSONObject;
 @Service
 public class OllamaServiceImpl implements OllamaService {
 
-    private static final String OLLAMA_API_URL = "http://localhost:11434/api/generate";
-    private static final String MODEL_NAME = "llama2-uncensored:latest"; // Change if using another model
+    private final Dotenv dotenv = Dotenv.load();
+
+    private String OLLAMA_API_URL;
+    private String MODEL_NAME;
 
     private final RestTemplate restTemplate;
 
     public OllamaServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+        this.OLLAMA_API_URL = dotenv.get("OLLAMA_API_URL");
+        this.MODEL_NAME = dotenv.get("OLLAMA_MODEL_NAME");
     }
 
     @Override
