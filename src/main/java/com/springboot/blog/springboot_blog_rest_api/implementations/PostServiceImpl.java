@@ -16,6 +16,7 @@ import com.springboot.blog.springboot_blog_rest_api.payloads.PostResponse;
 import com.springboot.blog.springboot_blog_rest_api.repositories.PostRepository;
 import com.springboot.blog.springboot_blog_rest_api.repositories.UserRepository;
 import com.springboot.blog.springboot_blog_rest_api.security.JwtTokenProvider;
+import com.springboot.blog.springboot_blog_rest_api.services.OllamaService;
 import com.springboot.blog.springboot_blog_rest_api.services.PostService;
 
 @Service
@@ -25,13 +26,15 @@ public class PostServiceImpl implements PostService {
     private ModelMapper mapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final OllamaService ollamaService;
 
     public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper, JwtTokenProvider jwtTokenProvider,
-            UserRepository userRepository) {
+            UserRepository userRepository, OllamaService ollamaService) {
         this.postRepository = postRepository;
         this.mapper = modelMapper;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
+        this.ollamaService = ollamaService;
     }
 
     private User getAuthenticatedUser(String token) {
@@ -119,6 +122,13 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> searchPosts(String query) {
         List<Post> posts = postRepository.searchPosts(query);
         return posts.stream().map(this::MapToDTO).toList();
+    }
+
+    @Override
+    public String summarizePostContent(Long id, String token) {
+        User user = getAuthenticatedUser(token);
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        return ollamaService.summarizeText(post.getContent());
     }
 
 }

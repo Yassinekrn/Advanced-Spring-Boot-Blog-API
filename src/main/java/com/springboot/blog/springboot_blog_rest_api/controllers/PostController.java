@@ -47,6 +47,16 @@ public class PostController {
         return new ResponseEntity<>(postService.createPost(postDto, jwt), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    @GetMapping("/summarize/{id}")
+    @Operation(summary = "Summarize post content", description = "Summarize post content by ID")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<String> summarizePostContent(@PathVariable Long id,
+            @RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        return new ResponseEntity<>(postService.summarizePostContent(id, jwt), HttpStatus.OK);
+    }
+
     @GetMapping
     @Operation(summary = "Get all posts", description = "Get all posts with pagination and sorting")
     public ResponseEntity<PostResponse> getAllPosts(

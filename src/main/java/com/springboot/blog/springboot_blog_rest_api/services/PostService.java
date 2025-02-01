@@ -2,6 +2,7 @@ package com.springboot.blog.springboot_blog_rest_api.services;
 
 import java.util.List;
 
+import com.springboot.blog.springboot_blog_rest_api.entities.Post;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostDto;
 import com.springboot.blog.springboot_blog_rest_api.payloads.PostResponse;
 
@@ -17,4 +18,6 @@ public interface PostService {
     void deletePost(Long id, String token);
 
     List<PostDto> searchPosts(String query);
+
+    String summarizePostContent(Long id, String token);
 }
