@@ -126,6 +126,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public String summarizePostContent(Long id, String token) {
+        @SuppressWarnings("unused")
         User user = getAuthenticatedUser(token);
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         return ollamaService.summarizeText(post.getContent());
