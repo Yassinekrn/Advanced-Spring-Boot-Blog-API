@@ -22,10 +22,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -56,28 +59,34 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     @Override
     public ResponseEntity<String> registerUser(SignupDto signupDto) {
+        logger.info("Creating a new user...");
         if (userRepository.existsByUsername(signupDto.getUsername())) {
             return new ResponseEntity<>("Username is already taken", HttpStatus.BAD_REQUEST);
         }
         if (userRepository.existsByEmail(signupDto.getEmail())) {
             return new ResponseEntity<>("Email is already taken", HttpStatus.BAD_REQUEST);
         }
-
+        logger.info("Passed username and email checks");
+        logger.info("Creating user object...");
         User user = new User();
         user.setName(signupDto.getName());
         user.setUsername(signupDto.getUsername());
         user.setEmail(signupDto.getEmail());
         user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
 
+        logger.info("Searching for default role to assign the user...");
         Role role = roleRepository.findByName("ROLE_USER")
                 .orElseGet(() -> {
+                    logger.info("Role not found, creating a new one...");
                     Role newRole = new Role();
                     newRole.setName("ROLE_USER");
                     return roleRepository.save(newRole); // Ensure role is persisted first
                 });
 
+        logger.info("Assigning role to user...");
         user.getRoles().add(role); // Assign role after ensuring persistence
         userRepository.save(user);
+        logger.info("User registered successfully");
 
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
