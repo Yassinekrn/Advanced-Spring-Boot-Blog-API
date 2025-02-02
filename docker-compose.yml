@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+    mysql-db:
+        image: mysql:8
+        container_name: mysql-container
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: blogdb
+        ports:
+            - "3307:3306"
+        volumes:
+            - mysql-data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 5s
+            retries: 10
+
+    blog-app:
+        build: .
+        depends_on:
+            mysql-db:
+                condition: service_healthy # Wait for MySQL to be ready
+        env_file:
+            - .env # This ensures the container has access to .env file
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/blogdb?useSSL=false&allowPublicKeyRetrieval=true
+            SPRING_DATASOURCE_USERNAME: root
+            SPRING_DATASOURCE_PASSWORD: root
+            SPRING_JPA_HIBERNATE_DDL_AUTO: update
+        ports:
+            - "8080:8080"
+
+volumes:
+    mysql-data:

@@ -1,0 +1,19 @@
+# Ignore source control files
+.git/
+.gitignore
+
+
+
+# Ignore IDE and editor files
+*.swp
+.idea/
+.vscode/
+
+# Ignore build artifacts except the JAR file
+target/
+!target/*.jar
+
+# Ignore test-related files
+src/test/
+*.log
+*.md

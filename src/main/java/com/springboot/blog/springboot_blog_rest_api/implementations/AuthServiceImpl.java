@@ -9,6 +9,9 @@ import com.springboot.blog.springboot_blog_rest_api.repositories.RoleRepository;
 import com.springboot.blog.springboot_blog_rest_api.repositories.UserRepository;
 import com.springboot.blog.springboot_blog_rest_api.security.JwtTokenProvider;
 import com.springboot.blog.springboot_blog_rest_api.services.AuthService;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +53,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtAuthResponse(token);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<String> registerUser(SignupDto signupDto) {
         if (userRepository.existsByUsername(signupDto.getUsername())) {
@@ -65,10 +69,16 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(signupDto.getEmail());
         user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
 
-        Optional<Role> role = roleRepository.findByName("ROLE_USER");
-        role.ifPresent(user.getRoles()::add);
+        Role role = roleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> {
+                    Role newRole = new Role();
+                    newRole.setName("ROLE_USER");
+                    return roleRepository.save(newRole); // Ensure role is persisted first
+                });
 
+        user.getRoles().add(role); // Assign role after ensuring persistence
         userRepository.save(user);
+
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
 }
