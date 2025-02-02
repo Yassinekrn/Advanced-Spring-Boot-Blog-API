@@ -1,0 +1,424 @@
+{
+    "info": {
+        "_postman_id": "6690c4db-b94f-420f-8835-97dcaed779d6",
+        "name": "Blog Application",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "29520744"
+    },
+    "item": [
+        {
+            "name": "Post",
+            "item": [
+                {
+                    "name": "Add Post",
+                    "request": {
+                        "auth": {
+                            "type": "basic",
+                            "basic": [
+                                {
+                                    "key": "password",
+                                    "value": "userpass",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "username",
+                                    "value": "user",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"aa\",\r\n    \"description\": \"aaaaaaaaaaa\",\r\n    \"content\": \"a\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/posts",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "posts"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Summarize Post",
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    },
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9uZG9lMTIzIiwiaWF0IjoxNzM4NDI1MTE3LCJleHAiOjE3MzkwMjk5MTd9.CxsKh8vTqzorn3ZcPaUnHVNkzUvrnm6ZS6rtoHBkIzbm-S8hmTs8JfXowpMgzmhHyxA9qFulCpBzBrF3w87I0Q",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/v1/posts/summarize/118",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "v1", "posts", "summarize", "118"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Posts",
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    },
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"post title\",\r\n    \"description\": \"post description\",\r\n    \"content\": \"post content\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/v1/posts?size=10&page=0&sortBy=title&sortOrder=desc",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "v1", "posts"],
+                            "query": [
+                                {
+                                    "key": "size",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "0"
+                                },
+                                {
+                                    "key": "sortBy",
+                                    "value": "title"
+                                },
+                                {
+                                    "key": "sortOrder",
+                                    "value": "desc"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Post By Id",
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    },
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"post title\",\r\n    \"description\": \"post description\",\r\n    \"content\": \"post content\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/v1/posts/1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "v1", "posts", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Post By Id",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"new post title\",\r\n    \"description\": \"post description\",\r\n    \"content\": \"post content\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/v1/posts/3",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "v1", "posts", "3"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Post by Id",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"title\": \"new post title\",\r\n    \"description\": \"post description\",\r\n    \"content\": \"post content\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/v1/posts/1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "v1", "posts", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Search Posts",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8080/api/v1/posts/search?query=test",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "v1", "posts", "search"],
+                            "query": [
+                                {
+                                    "key": "query",
+                                    "value": "test"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Comment",
+            "item": [
+                {
+                    "name": "Add Comment",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Jhon Doe\",\r\n    \"email\": \"jhone123@gmail.com\",\r\n    \"body\": \"this is so cool!\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/posts/5/comments",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "posts", "5", "comments"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Comments By Post Id",
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    },
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Jhon Doe\",\r\n    \"email\": \"jhone123@gmail.com\",\r\n    \"body\": \"this is so cool!\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/posts/5/comments",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "posts", "5", "comments"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Comment By Post and Comment Id",
+                    "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                    },
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Jhon Doe\",\r\n    \"email\": \"jhone123@gmail.com\",\r\n    \"body\": \"this is so cool!\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/posts/5/comments/1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "posts", "5", "comments", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Comment By Post and Comment Id Copy",
+                    "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Jhon Doe\",\r\n    \"email\": \"jhone123v2@gmail.com\",\r\n    \"body\": \"this is so cool man!\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/posts/5/comments/1",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "posts", "5", "comments", "1"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Comment By Post and Comment Id Copy 2",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"Jhon Doe\",\r\n    \"email\": \"jhone123v2@gmail.com\",\r\n    \"body\": \"this is so cool man!\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/posts/5/comments/2",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "posts", "5", "comments", "2"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"usernameOrEmail\": \"noel\",\r\n    \"password\": \"password\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/auth/login",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "auth", "login"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Signup",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"name\": \"antoon\",\r\n    \"username\": \"antoony12\",\r\n    \"email\": \"anto22@outlook.co\",\r\n    \"password\": \"password\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8080/api/auth/signup",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8080",
+                            "path": ["api", "auth", "signup"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Actuator Health",
+            "request": {
+                "method": "GET",
+                "header": []
+            },
+            "response": []
+        }
+    ]
+}
